@@ -66,7 +66,7 @@
             this.Vendedor,
             this.Nombre,
             this.Column1});
-            this.dataGridView1.GridColor = System.Drawing.Color.IndianRed;
+            this.dataGridView1.GridColor = System.Drawing.Color.Black;
             this.dataGridView1.Location = new System.Drawing.Point(459, 12);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
