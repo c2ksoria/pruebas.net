@@ -28,16 +28,6 @@ namespace testButton
             Inicialización(12, 33, "imprimir");
             Inicialización(12, 66, "exportar");
 
-            string json = @"{
-                      'name': 'Bad Boys'
-                    }";
-
-            Movie m = JsonConvert.DeserializeObject<Movie>(json);
-            //Movie pelicula = new Movie("informe pelicano");
-
-
-
-            Console.WriteLine(m.getName());
 
 
             var botones = getInfoBotonesFromFile();
@@ -78,21 +68,31 @@ namespace testButton
             Button btnDynamicButton = sender as Button;
             textBox1.AppendText(btnDynamicButton.Text);
             textBox1.AppendText(Environment.NewLine);
-            if (btnDynamicButton.Text == "Dynamic Button_3")
+            switch (btnDynamicButton.Text)
             {
-                moverAbajo();
-            }
-            if (btnDynamicButton.Text == "Dynamic Button_2")
-            {
-                moverArriba();
-            }
-            if (btnDynamicButton.Text == "Dynamic Button_4")
-            {
-                moverFin();
-            }
-            if (btnDynamicButton.Text == "Dynamic Button_1")
-            {
-                moverInicio();
+                case "Dynamic Button_3":
+                    {
+                        moverAbajo();
+                        break;
+                    }
+                case "Dynamic Button_2":
+                    {
+                        moverArriba();
+                        break;
+                    }
+                case "Dynamic Button_4":
+                    {
+                        moverFin();
+                        break;
+                    }
+                case "Dynamic Button_1":
+                    {
+                        moverInicio();
+                        break;
+                    }
+
+                default:
+                    break;
             }
         }
 
@@ -184,22 +184,17 @@ namespace testButton
             private string name = "";
 
         }
-
-
-
         public static string getInfoBotonesFromFile()
         {
             string botonesInfoFromfile;
             using (var reader = new StreamReader(_path))
             {
                 botonesInfoFromfile = reader.ReadToEnd();
-
             }
             return botonesInfoFromfile;
         }
         public static void DesearializaerJsonFile(string infoBotonesFromFiles)
         {
-
             var botones = JsonConvert.DeserializeObject<List<Botones>>(infoBotonesFromFiles);
             Console.WriteLine(infoBotonesFromFiles);
             Console.WriteLine(botones[0].Text);
