@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<buttons>
+		<add key="Boton1" value="Inicio"/>
+		<add key="Boton2" value="Bajar"/>
+		<add key="Boton3" value="Subir"/>
+		<add key="Boton4" value="Fin"/>
+	</buttons>
+</configuration>

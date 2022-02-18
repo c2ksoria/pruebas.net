@@ -1,12 +1,15 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using testButton.Models;
 
 namespace testButton
 {
@@ -14,6 +17,7 @@ namespace testButton
     {
         int DynamicButtonCount = 1;
         int entero = 0;
+        private static string _path = @"C:\Users\Valdemar\Desktop\SFH\Pruebas\xxx\test\Recursos\setupBotones.json";
         public Form1()
         {
             InitializeComponent();
@@ -23,6 +27,21 @@ namespace testButton
 
             Inicialización(12, 33, "imprimir");
             Inicialización(12, 66, "exportar");
+
+            string json = @"{
+                      'name': 'Bad Boys'
+                    }";
+
+            Movie m = JsonConvert.DeserializeObject<Movie>(json);
+            //Movie pelicula = new Movie("informe pelicano");
+
+
+
+            Console.WriteLine(m.getName());
+
+
+            var botones = getInfoBotonesFromFile();
+            DesearializaerJsonFile(botones);
         }
 
         private void Inicialización(int xPos, int yPos, string textButton)
@@ -70,7 +89,7 @@ namespace testButton
             if (btnDynamicButton.Text == "Dynamic Button_4")
             {
                 moverFin();
-            }            
+            }
             if (btnDynamicButton.Text == "Dynamic Button_1")
             {
                 moverInicio();
@@ -87,10 +106,6 @@ namespace testButton
             selected(e);
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            dataGridView1.CurrentCell = dataGridView1[1, 2];
-        }
 
         private void selected(DataGridViewCellEventArgs e)
         {
@@ -101,7 +116,7 @@ namespace testButton
             entero = e.RowIndex;
             ///////////////////////////////////////////////////////////////////////////////////
         }
-
+        #region "DataGriedView Methods"
         private int getCount() => dataGridView1.Rows.Count;
         private int getRow() => dataGridView1.CurrentCell.RowIndex;
 
@@ -109,7 +124,7 @@ namespace testButton
         {
             int countRows = getCount();
             int indexRow = getRow();
-            int[] ArraInfo = new int[2] { countRows, indexRow};
+            int[] ArraInfo = new int[2] { countRows, indexRow };
 
             return ArraInfo;
         }
@@ -119,13 +134,13 @@ namespace testButton
             int[] ArrayInfo = new int[2];
             ArrayInfo = getInfoRow();
 
-            if (ArrayInfo[1] < (ArrayInfo[0]-1))
+            if (ArrayInfo[1] < (ArrayInfo[0] - 1))
             {
                 DataGridViewCellEventArgs ee = new DataGridViewCellEventArgs(1, ArrayInfo[1]++);
                 selected(ee);
                 dataGridView1.CurrentCell = dataGridView1.Rows[ArrayInfo[1]++].Cells[0];
             }
-        }        
+        }
         private void moverArriba()
         {
             int[] ArrayInfo = new int[2];
@@ -143,96 +158,51 @@ namespace testButton
         {
             int[] ArrayInfo = new int[2];
             ArrayInfo = getInfoRow();
-            DataGridViewCellEventArgs ee = new DataGridViewCellEventArgs(1, ArrayInfo[0]-1);
+            DataGridViewCellEventArgs ee = new DataGridViewCellEventArgs(1, ArrayInfo[0] - 1);
             selected(ee);
-            dataGridView1.CurrentCell = dataGridView1.Rows[ArrayInfo[0]-1].Cells[0];
+            dataGridView1.CurrentCell = dataGridView1.Rows[ArrayInfo[0] - 1].Cells[0];
         }
 
         private void moverInicio()
         {
-            DataGridViewCellEventArgs ee = new DataGridViewCellEventArgs(1,0);
+            DataGridViewCellEventArgs ee = new DataGridViewCellEventArgs(1, 0);
             selected(ee);
             dataGridView1.CurrentCell = dataGridView1.Rows[0].Cells[0];
         }
-        class Botones
+        #endregion
+        class Movie
         {
+            public Movie(string name)
+            {
+                this.name = name;
+            }
+
+            public string getName()
+            {
+                return name;
+            }
+            private string name = "";
 
         }
 
 
-        //código obsoleto probado en algún momento...
-        //textBox1.AppendText("La cantidad de filas es: " + countRows.ToString());
-        //textBox1.AppendText(Environment.NewLine);
-        //textBox1.AppendText("El índice de fila es: " + indexRow.ToString());
-        //textBox1.AppendText(Environment.NewLine);
 
-        //dataGridView1.Rows[indexRow].Selected = false;
-        //DataGridViewRow row1 = dataGridView1.Rows[e.RowIndex];
-        //dataGridView1.Rows[indexRow++].Selected = true;
-        //row1.DefaultCellStyle.BackColor = Color.Green;
+        public static string getInfoBotonesFromFile()
+        {
+            string botonesInfoFromfile;
+            using (var reader = new StreamReader(_path))
+            {
+                botonesInfoFromfile = reader.ReadToEnd();
 
-        //int countRows = getCount();
-        //int indexRow = getRow();
+            }
+            return botonesInfoFromfile;
+        }
+        public static void DesearializaerJsonFile(string infoBotonesFromFiles)
+        {
 
-
-        //textBox1.AppendText("La cantidad de filas es: "+countRows.ToString());
-        //textBox1.AppendText(Environment.NewLine);
-        //textBox1.AppendText("El índice de fila es: " + indexRow.ToString());
-        //textBox1.AppendText(Environment.NewLine);
-        //dataGridView1.DefaultCellStyle.BackColor = Color.Yellow;
-        //dataGridView1.BackgroundColor = Color.Yellow;
-
-        ///////////////////////////////////////////////////////////////////////////////////
-        //Este primer intento con el foreach si funciona...voy a tratar de optimizarlo
-        //foreach (DataGridViewRow row in dataGridView1.Rows)
-        //{
-        //    Console.WriteLine(row.Index);
-        //    DataGridViewRow row22 = dataGridView1.Rows[row.Index];
-        //    row22.DefaultCellStyle.BackColor = Color.White;
-        ///////////////////////////////////////////////////////////////////////////////////
-        ///
-
-
-
-
-        //}
-        //dataGridView1.RowsDefaultCellStyle.BackColor = Color.Blue;
-
-        ////dataGridView1.RowHeadersDefaultCellStyle.SelectionBackColor = Color.Empty;
-        //dataGridView1.RowHeadersDefaultCellStyle.BackColor = Color.Black;
-        //dataGridView1.DefaultCellStyle.SelectionBackColor = Color.Red;
-
-        /////////////////////////////////////////////////////////////////////////////////////
-        /////
-        //DataGridViewCellEventArgs ee = new DataGridViewCellEventArgs(1,1);
-        //selected(ee);
-        /////////////////////////////////////////////////////////////////////////////////////
-        /////
-
-
-
-        //var dynamicButton = sender as Button;
-
-        //textBox1.AppendText(dynamicButton.Text);
-        //textBox1.AppendText(Environment.NewLine);
-        ////MessageBox.Show("holas");
-        ////dataGridView1.Rows[2].ReadOnly = true;
-        //dataGridView1.CurrentCell = dataGridView1.Rows[0].Cells[2];
-        //dataGridView1.Rows[0].Selected = true;
-
-        //int rowIndex = e.RowIndex;
-        //DataGridViewRow row = dataGridView1.Rows[rowIndex];
-        //textBox1.Text = dataGridView1.Rows[1].Cells[1].Value.ToString();// row.Cells[1].Value;
-        //Console.WriteLine(rowIndex);
-
-        //dataGridView1.SelectedRows.Clear();
-        //private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        //{
-        //    int index = dataGridView1.CurrentCell.RowIndex;
-        //    textBox1.AppendText(index.ToString());
-        //    Console.WriteLine(index);
-
-        //}
-
+            var botones = JsonConvert.DeserializeObject<List<Botones>>(infoBotonesFromFiles);
+            Console.WriteLine(infoBotonesFromFiles);
+            Console.WriteLine(botones[0].Text);
+        }
     }
 }

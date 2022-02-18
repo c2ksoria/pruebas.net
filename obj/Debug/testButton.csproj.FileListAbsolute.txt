@@ -9,3 +9,6 @@ C:\Users\Valdemar\Desktop\SFH\Pruebas\xxx\test\testButton\obj\Debug\testButton.c
 C:\Users\Valdemar\Desktop\SFH\Pruebas\xxx\test\testButton\obj\Debug\testButton.exe
 C:\Users\Valdemar\Desktop\SFH\Pruebas\xxx\test\testButton\obj\Debug\testButton.pdb
 C:\Users\Valdemar\Desktop\SFH\Pruebas\xxx\test\testButton\obj\Debug\testButton.csproj.AssemblyReference.cache
+C:\Users\Valdemar\Desktop\SFH\Pruebas\xxx\test\testButton\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Valdemar\Desktop\SFH\Pruebas\xxx\test\testButton\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Valdemar\Desktop\SFH\Pruebas\xxx\test\testButton\obj\Debug\testButton.csproj.CopyComplete
