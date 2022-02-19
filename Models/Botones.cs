@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace testButton.Models
 {
-    internal class Botones
+    class Botones
     {
         public String Name { get; set; }
         public String Text { get; set; }

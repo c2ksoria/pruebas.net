@@ -92,3 +92,19 @@
         //    Console.WriteLine(index);
 
         //}
+
+                //Console.WriteLine(xx[i].Text);
+                //Console.WriteLine("-------------------------------------------");
+                //Console.WriteLine(xx[i].Name);
+                //Console.WriteLine("-------------------------------------------");
+                //Console.WriteLine(xx[i].Size.X);
+
+                            //string name = "Dynamic Button_" + DynamicButtonCount.ToString();
+            //Button btnDynamicButton = new Button();
+            //btnDynamicButton.Name = name;
+            //btnDynamicButton.Text = name;
+            //btnDynamicButton.Size = new System.Drawing.Size(200, 30);
+            //btnDynamicButton.Location = new System.Drawing.Point(40, (DynamicButtonCount * 40));
+            //btnDynamicButton.Click += new EventHandler(btnDynamicButton_Click);
+            //Controls.Add(btnDynamicButton);
+            //DynamicButtonCount++;
