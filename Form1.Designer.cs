@@ -71,7 +71,8 @@
             this.dataGridView1.TabIndex = 2;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_Click);
             this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.testingCell);
-            this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.data);
+            this.dataGridView1.TabIndexChanged += new System.EventHandler(this.test);
+            this.dataGridView1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.data);
             // 
             // button2
             // 

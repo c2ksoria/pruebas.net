@@ -20,7 +20,8 @@ namespace testButton
         //int entero = 0;
         private static string _path = @"C:\Users\Valdemar\Desktop\SFH\Pruebas\xxx\test\Recursos\setupBotones.json";
         List<Botones> xx = new List<Botones>();
-        bool bloqueoBotones = false;
+        bool bloqueoBotones = true;
+        StateForm State = new StateForm();
         public Form1()
         {
             InitializeComponent();
@@ -28,22 +29,12 @@ namespace testButton
         #region "LOAD Formulario"
         private void Form1_Load(object sender, EventArgs e)
         {
-
-            //Inicialización(12, 33, "imprimir");
-            //Inicialización(12, 66, "exportar");
-
-            setupDatagriedView();
-
-            var botones = getInfoBotonesFromFile();
-
-            
-            xx=DesearializaerJsonFile(botones);
-
-            for (int i = 0; i < xx.Count; i++)
-            {
-                Inicialización(xx[i].Location.X, xx[i].Location.Y, xx[i].Size.X, xx[i].Size.Y, xx[i].Text, xx[i].Name);
-            }
-
+            Inicio();
+            BloqueoBotones(bloqueoBotones);
+            ClearData();
+            Console.WriteLine(State.GetState());
+            State.SetState("Espera");
+            Console.WriteLine(State.GetState());
         }
         #endregion
 
@@ -68,7 +59,7 @@ namespace testButton
             if (ArrayInfo[1] < (ArrayInfo[0] - 1))
             {
                 DataGridViewCellEventArgs ee = new DataGridViewCellEventArgs(1, ArrayInfo[1]++);
-                Selected(ee);
+                Selected();
                 dataGridView1.CurrentCell = dataGridView1.Rows[ArrayInfo[1]++].Cells[0];
             }
         }
@@ -80,7 +71,7 @@ namespace testButton
             if (ArrayInfo[1] > 0)
             {
                 DataGridViewCellEventArgs ee = new DataGridViewCellEventArgs(1, ArrayInfo[1]--);
-                Selected(ee);
+                Selected();
                 dataGridView1.CurrentCell = dataGridView1.Rows[ArrayInfo[1]--].Cells[0];
             }
         }
@@ -89,15 +80,15 @@ namespace testButton
         {
             int[] ArrayInfo = new int[2];
             ArrayInfo = getInfoRow();
-            DataGridViewCellEventArgs ee = new DataGridViewCellEventArgs(1, ArrayInfo[0] - 1);
-            Selected(ee);
+            //DataGridViewCellEventArgs ee = new DataGridViewCellEventArgs(1, ArrayInfo[0] - 1);
+            Selected();
             dataGridView1.CurrentCell = dataGridView1.Rows[ArrayInfo[0] - 1].Cells[0];
         }
 
         private void moverInicio()
         {
-            DataGridViewCellEventArgs ee = new DataGridViewCellEventArgs(1, 0);
-            Selected(ee);
+            //DataGridViewCellEventArgs ee = new DataGridViewCellEventArgs(1, 0);
+            Selected();
             dataGridView1.CurrentCell = dataGridView1.Rows[0].Cells[0];
         }
 
@@ -115,11 +106,10 @@ namespace testButton
             dataGridView1.MultiSelect = false;
             dataGridView1.ScrollBars = ScrollBars.Vertical;
         }
-
-        private void Selected(DataGridViewCellEventArgs e)
+        private void Selected()
         {
             ///////////////////////////////////////////////////////////////////////////////////
-            //Funcion de selección de Row. Segundo Intento más optimizado, utilizando una variable globla
+            //Funcion de selección de Row. Segundo Intento más optimizado, utilizando una variable global
             DataGridViewRow row = dataGridView1.Rows[0];
             row.DefaultCellStyle.BackColor = Color.White;
             //entero = e.RowIndex;
@@ -127,6 +117,7 @@ namespace testButton
         }
         private void data(object sender, KeyEventArgs e)
         {
+            Console.WriteLine("----------");
             Console.WriteLine(dataGridView1.CurrentCell);
             if (e.KeyCode == Keys.Enter)
             {
@@ -134,6 +125,10 @@ namespace testButton
                 e.Handled = true;
                 SendKeys.Send("{tab}");
             }
+        }
+        private void ClearData()
+        {
+            dataGridView1.DataSource = null;
         }
         #endregion
 
@@ -172,8 +167,13 @@ namespace testButton
         }
         private void BuscarDatos()
         {
+            State.SetState("Buscar");
+            StateChanged();
             var path = @"C:\Users\Valdemar\Desktop\SFH\Pruebas\xxx\test\Recursos\test.xls";
             ImportarDatos(path);
+            State.SetState("Mostrar");
+            StateChanged();
+
         }
 
         public static string getInfoBotonesFromFile()
@@ -198,7 +198,7 @@ namespace testButton
                 if (set == true)
                 {
 
-                    btn.Enabled= false;
+                    btn.Enabled = false;
                 }
                 else
                 {
@@ -258,11 +258,8 @@ namespace testButton
             }
 
         }
-        #endregion
-
-        #region "Código de ayuda para hacer pruebas"
-        private void button3_Click(object sender, EventArgs e)
-        {
+        public void BloqueoBotones(bool bloqueoBotones)
+            {
             if (bloqueoBotones)
             {
                 changeLock(bloqueoBotones);
@@ -273,8 +270,30 @@ namespace testButton
                 changeLock(bloqueoBotones);
                 bloqueoBotones = true;
             }
+            }
+        #endregion
+
+        #region "Código de ayuda para hacer pruebas"
+        private void button3_Click(object sender, EventArgs e)
+        {
+            //bloqueoBotones = !bloqueoBotones;
+            //BloqueBotones(bloqueoBotones);
         }
-        private void testingCell(object sender, DataGridViewCellEventArgs e)
+
+
+
+
+
+ 
+    //public static void StateChanged(string nuevoEstado, Form1 form1)
+    //{
+    //    if (nuevoEstado == "Espera")
+    //    {
+    //        form1.bloqueoBotones = !form1.bloqueoBotones;
+    //        form1.BloqueoBotones(form1.bloqueoBotones);
+    //    }
+    //}
+    private void testingCell(object sender, DataGridViewCellEventArgs e)
         {
             Console.WriteLine("doble click!");
 
@@ -283,19 +302,112 @@ namespace testButton
         }
         private void dataGridView1_Click(object sender, DataGridViewCellEventArgs e)
         {
-            Selected(e);
+            Selected();
         }
         public void button1_Click(object sender, EventArgs e)
         {
             Console.WriteLine("No hace nada este boton....");
+            //dataGridView1.Rows.Clear();
+            //dataGridView1.Refresh();
+            dataGridView1.DataSource = null;
+            State.SetState("Espera");
+            StateChanged();
+
 
         }
         private void button2_Click(object sender, EventArgs e)
         {
+            
             BuscarDatos();
-            //changeLock(true);
+            
+
         }
         #endregion
 
+        private void data(object sender, KeyPressEventArgs e)
+        {
+            Console.WriteLine("----------");
+            Console.WriteLine(dataGridView1.CurrentCell);
+            if (e.KeyChar=='\r')
+            {
+                SendKeys.Send("{tab}");
+            }
+        }
+        private void test(object sender, EventArgs e)
+        {
+            Console.WriteLine("**************//////////////************");
+        }
+        private void Inicio()
+        {
+            
+            setupDatagriedView();
+
+            var botones = getInfoBotonesFromFile();
+
+            xx = DesearializaerJsonFile(botones);
+
+            for (int i = 0; i < xx.Count; i++)
+            {
+                Inicialización(xx[i].Location.X, xx[i].Location.Y, xx[i].Size.X, xx[i].Size.Y, xx[i].Text, xx[i].Name);
+            }
+ 
+        }
+
+        public void StateChanged()
+        {
+            string data = State.GetState();
+            if (data == "Espera")
+            {
+                BloqueoBotones(true);
+            }
+            else if(data == "Buscar")
+            {
+                BloqueoBotones(true);
+            }
+            else if (data == "Mostrar")
+            {
+                BloqueoBotones(false);
+            }
+        }
+         
+    }
+    class StateForm
+    {
+        public StateForm()
+        {
+            this.StateFormValue = "Inicio";
+            Console.WriteLine(this.StateFormValue);
+        }
+        public string GetState()
+        {
+            return StateFormValue;
+        }
+        public void SetState(string StateFormValue)
+        {
+            Console.WriteLine("----------------------");
+            Console.WriteLine(StateFormValue);
+            if (this.StateFormValue == "Inicio" && StateFormValue == "Espera")
+                {
+                this.StateFormValue = StateFormValue;
+                Console.WriteLine("entró al cambio de Inicio a Espera....: ",StateFormValue);
+                }
+            else if (this.StateFormValue == "Espera" && StateFormValue == "Buscar")
+                {
+                this.StateFormValue = StateFormValue;
+                }
+            else if (this.StateFormValue == "Buscar" && StateFormValue == "Mostrar")
+                {
+                this.StateFormValue = StateFormValue;
+                }
+            else if(this.StateFormValue == "Mostrar" && StateFormValue == "Espera")
+                {
+                this.StateFormValue = StateFormValue;
+                }
+            
+            //Console.WriteLine(StateFormValue);
+            Console.WriteLine("-----------------");
+            
+        }
+        private string StateFormValue = "";
     }
 }
