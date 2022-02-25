@@ -16,12 +16,29 @@ namespace testButton
 {
     public partial class Form1 : Form
     {
-        int DynamicButtonCount = 1;
-        //int entero = 0;
         private static string _path = @"C:\Users\Valdemar\Desktop\SFH\Pruebas\xxx\test\Recursos\setupBotones.json";
         List<Botones> xx = new List<Botones>();
-        bool bloqueoBotones = true;
         StateForm State = new StateForm();
+        Dictionary<string, bool> habilitaciones = new Dictionary<string, bool>();
+        Dictionary<string, bool> desHabilitaciones = new Dictionary<string, bool>();
+        List<(string, bool)> PermisosFuncionesNavegacion = new List<(string, bool)> { ("botonInicio", true), ("botonArriba", true), ("botonAbajo", true), ("botonFin", true) };
+        List<(string, bool, string, int, int, int, int)> PosicionesBotones = new List<(string, bool, string, int, int, int, int)>(){
+                ("botonInicio", true, "|<", 12, 44, 80, 30),
+                ("botonArriba", true, "<", 98, 44, 80, 30),
+                ("botonAbajo", true, ">", 188, 44, 80, 30),
+                ("botonFin", true, ">|", 270, 44, 80, 30),
+                ("BG1", true, "BG1", 356, 44, 80, 30),
+                ("BG2", true, "BG2", 442, 44, 80, 30),
+                ("BG3", true, "BG3", 528, 44, 80, 30),
+                ("BG4", true, "BG4", 614, 44, 80, 30),
+                ("botonConfig", true, "Configurar", 700, 44, 80, 30),
+                ("botonExportar", true, "Exportar", 786, 44, 80, 30),
+                ("botonImprimir", true, "Imprimir", 872, 44, 80, 30),
+                ("botonSalir", true, "Salir", 958, 44, 80, 30)
+        };
+        Dictionary<string, string> NuevosBotonesSetup = new Dictionary<string, string>();
+        // item1: Nombre, Item2: habilitación, Item3: Texto, Item4: Xpos, Item5: Ypos, Item6: Xsize, Item7: Ysize //
+        List<(string, bool)> Basicas = new List<(string, bool)>() { ("botonConfig", true), ("botonExportar", true), ("botonImprimir", true), ("botonSalir", true) };
         public Form1()
         {
             InitializeComponent();
@@ -29,14 +46,43 @@ namespace testButton
         #region "LOAD Formulario"
         private void Form1_Load(object sender, EventArgs e)
         {
-            Inicio();
-            BloqueoBotones(bloqueoBotones);
+            // Campos: Nombre de Comando, habilitación, Nombre 
+            var PermisosFuncionesCustom = new List<(string, bool, string, string)>() { ("BG1", true, "sucursales", "Sucursales"), ("BG1", true, "clientes", "Clientes"), ("BG2", true, "Grabar", "Grabar")};
+            //Setup(Basicas, PermisosFuncionesNavegacion);
+            Setup(PermisosFuncionesNavegacion);
+            Setup(Basicas);
+            Console.WriteLine("-------------------");
+            //Inicio();
+            //BloqueoBotones(bloqueoBotones);
             ClearData();
+            HabilitacionGlobal(habilitaciones);
             Console.WriteLine(State.GetState());
-            State.SetState("Espera");
+            //State.SetState("Espera");
             Console.WriteLine(State.GetState());
         }
         #endregion
+
+        private void Setup(List<(string, bool)> aProcesar)
+        {
+            for (int i = 0; i < aProcesar.Count; i++)
+            {
+                if (aProcesar[i].Item2 == true)
+                {
+                    for (int j = 0; j < PosicionesBotones.Count; j++)
+                    {
+                        if(aProcesar[i].Item1 == PosicionesBotones[j].Item1)
+                        {
+                            Console.WriteLine("aProcesar: {0} == PosicionesBotones {1}",aProcesar[i].Item1, PosicionesBotones[j].Item1);
+                            Inicialización(PosicionesBotones[j].Item4, PosicionesBotones[j].Item5, PosicionesBotones[j].Item6, PosicionesBotones[j].Item7, PosicionesBotones[j].Item3, PosicionesBotones[j].Item1);
+                        }
+                    }
+                }
+            }
+        }
+        private void Setup(List<(string, bool)> aProcesar, List<(string, bool, string)> posicionesBotones)
+        {
+            
+        }
 
         #region "DataGriedView Methods"
         private int getCount() => dataGridView1.Rows.Count;
@@ -193,7 +239,7 @@ namespace testButton
         {
             for (int i = 0; i < (xx.Count); i++)
             {
-                //Console.WriteLine(xx[i].Name);
+                Console.WriteLine(xx[i].Name);
                 Button btn = (Button)this.Controls[xx[i].Name];
                 if (set == true)
                 {
@@ -245,13 +291,21 @@ namespace testButton
                             moverInicio();
                             break;
                         }
-                    case "botonCancelar":
+                    case "botonSalir":
                         {
-
                             this.Close();
                             break;
                         }
-
+                    case "botonImprimir":
+                        {
+                            Console.WriteLine("Imprimiendo...");
+                            break;
+                        }
+                    case "botonExportar":
+                        {
+                            Console.WriteLine("Exportando...");
+                            break;
+                        }
                     default:
                         break;
                 }
@@ -271,6 +325,22 @@ namespace testButton
                 bloqueoBotones = true;
             }
             }
+
+        private void HabilitacionGlobal(Dictionary <string, bool> nuevaHabilitacion)
+        {
+            int i = 0;
+            foreach (var item in nuevaHabilitacion)
+            {
+                Button btn = (Button)this.Controls[xx[i].Name];
+                btn.Visible = item.Value;
+                Console.WriteLine("Key " + item.Key + " Value " + item.Value);
+                i++;
+
+            }
+        }
+
+
+        
         #endregion
 
         #region "Código de ayuda para hacer pruebas"
@@ -348,11 +418,10 @@ namespace testButton
 
             for (int i = 0; i < xx.Count; i++)
             {
-                Inicialización(xx[i].Location.X, xx[i].Location.Y, xx[i].Size.X, xx[i].Size.Y, xx[i].Text, xx[i].Name);
+                //Inicialización(xx[i].Location.X, xx[i].Location.Y, xx[i].Size.X, xx[i].Size.Y, xx[i].Text, xx[i].Name);
             }
  
         }
-
         public void StateChanged()
         {
             string data = State.GetState();
@@ -369,8 +438,8 @@ namespace testButton
                 BloqueoBotones(false);
             }
         }
-         
     }
+    #region "Estado del Formulario"
     class StateForm
     {
         public StateForm()
@@ -403,11 +472,10 @@ namespace testButton
                 {
                 this.StateFormValue = StateFormValue;
                 }
-            
-            //Console.WriteLine(StateFormValue);
             Console.WriteLine("-----------------");
             
         }
         private string StateFormValue = "";
     }
+    #endregion
 }
