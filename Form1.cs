@@ -20,7 +20,6 @@ namespace testButton
         List<Botones> xx = new List<Botones>();
         StateForm State = new StateForm();
         Dictionary<string, bool> habilitaciones = new Dictionary<string, bool>();
-        Dictionary<string, bool> desHabilitaciones = new Dictionary<string, bool>();
         List<(string, bool)> PermisosFuncionesNavegacion = new List<(string, bool)> { ("botonInicio", true), ("botonArriba", true), ("botonAbajo", true), ("botonFin", true) };
         List<(string, bool, string, int, int, int, int)> PosicionesBotones = new List<(string, bool, string, int, int, int, int)>(){
                 ("botonInicio", true, "|<", 12, 44, 80, 30),
@@ -38,7 +37,9 @@ namespace testButton
         };
         Dictionary<string, string> NuevosBotonesSetup = new Dictionary<string, string>();
         // item1: Nombre, Item2: habilitación, Item3: Texto, Item4: Xpos, Item5: Ypos, Item6: Xsize, Item7: Ysize //
-        List<(string, bool)> Basicas = new List<(string, bool)>() { ("botonConfig", true), ("botonExportar", true), ("botonImprimir", true), ("botonSalir", true) };
+        List<(string, bool)> Basicas = new List<(string, bool)>() { ("botonConfig", false), ("botonExportar", true), ("botonImprimir", true), ("botonSalir", true) };
+        List<(string, bool, string, string)> PermisosFuncionesCustom = new List<(string, bool, string, string)>() { ("BG1", true, "botonSucursales", "Sucursales"), ("BG2", true, "botonPlanes", "Planes"), ("BG4", true, "botonGrabar", "Grabar") };
+        List<string> BotonesActuales = new List<string>();
         public Form1()
         {
             InitializeComponent();
@@ -47,21 +48,18 @@ namespace testButton
         private void Form1_Load(object sender, EventArgs e)
         {
             // Campos: Nombre de Comando, habilitación, Nombre 
-            var PermisosFuncionesCustom = new List<(string, bool, string, string)>() { ("BG1", true, "sucursales", "Sucursales"), ("BG1", true, "clientes", "Clientes"), ("BG2", true, "Grabar", "Grabar")};
-            //Setup(Basicas, PermisosFuncionesNavegacion);
-            Setup(PermisosFuncionesNavegacion);
-            Setup(Basicas);
             Console.WriteLine("-------------------");
-            //Inicio();
+            Inicio();
+            State.SetState("Espera");
+            StateChanged();
             //BloqueoBotones(bloqueoBotones);
-            ClearData();
-            HabilitacionGlobal(habilitaciones);
-            Console.WriteLine(State.GetState());
-            //State.SetState("Espera");
-            Console.WriteLine(State.GetState());
+            //HabilitacionGlobal(habilitaciones);
+            //Console.WriteLine("Obteniedo estado actual: ",State.GetState());
+            //Console.WriteLine(State.GetState());
         }
         #endregion
 
+        #region "Setup de botones en base a permisos"
         private void Setup(List<(string, bool)> aProcesar)
         {
             for (int i = 0; i < aProcesar.Count; i++)
@@ -70,21 +68,50 @@ namespace testButton
                 {
                     for (int j = 0; j < PosicionesBotones.Count; j++)
                     {
-                        if(aProcesar[i].Item1 == PosicionesBotones[j].Item1)
+                        if (aProcesar[i].Item1 == PosicionesBotones[j].Item1)
                         {
-                            Console.WriteLine("aProcesar: {0} == PosicionesBotones {1}",aProcesar[i].Item1, PosicionesBotones[j].Item1);
+                            //Console.WriteLine("aProcesar: {0} == PosicionesBotones {1}",aProcesar[i].Item1, PosicionesBotones[j].Item1);
                             Inicialización(PosicionesBotones[j].Item4, PosicionesBotones[j].Item5, PosicionesBotones[j].Item6, PosicionesBotones[j].Item7, PosicionesBotones[j].Item3, PosicionesBotones[j].Item1);
+                            BotonesActuales.Add(aProcesar[i].Item1);
                         }
                     }
                 }
             }
         }
-        private void Setup(List<(string, bool)> aProcesar, List<(string, bool, string)> posicionesBotones)
+        private void Setup(List<(string, bool, string, string)> aProcesar)
         {
-            
+            for (int i = 0; i < aProcesar.Count; i++)
+            {
+                if (aProcesar[i].Item2 == true)
+                {
+                    for (int j = 0; j < PosicionesBotones.Count; j++)
+                    {
+                        if (aProcesar[i].Item1 == PosicionesBotones[j].Item1)
+                        {
+                            Inicialización(PosicionesBotones[j].Item4, PosicionesBotones[j].Item5, PosicionesBotones[j].Item6, PosicionesBotones[j].Item7, aProcesar[i].Item4, aProcesar[i].Item3);
+                            BotonesActuales.Add(aProcesar[i].Item3);
+                        }
+                    }
+                }
+            }
         }
+        private void Inicio()
+        {
+            setupDatagriedView();
+            ClearData();
+            Setup(PermisosFuncionesNavegacion);
+            Setup(PermisosFuncionesCustom);
+            Setup(Basicas);
+            for (int i = 0; i < BotonesActuales.Count; i++)
+            {
+                Console.WriteLine("boton: {0}", BotonesActuales[i]);
+                //Button btn = (Button)this.Controls[BotonesActuales[i]];
+                //btn.TabIndex = i;
+            }
+        }
+        #endregion
 
-        #region "DataGriedView Methods"
+        #region "Métodos DataGriedView"
         private int getCount() => dataGridView1.Rows.Count;
         private int getRow() => dataGridView1.CurrentCell.RowIndex;
 
@@ -176,6 +203,16 @@ namespace testButton
         {
             dataGridView1.DataSource = null;
         }
+
+        private void data(object sender, KeyPressEventArgs e)
+        {
+            Console.WriteLine("----------");
+            Console.WriteLine(dataGridView1.CurrentCell);
+            if (e.KeyChar == '\r')
+            {
+                SendKeys.Send("{tab}");
+            }
+        }
         #endregion
 
         #region "Lectura de Datos"
@@ -237,10 +274,10 @@ namespace testButton
         #region "Métodos de Botones de navegacion"
         public void changeLock(bool set)
         {
-            for (int i = 0; i < (xx.Count); i++)
+            for (int i = 0; i < (BotonesActuales.Count - 1); i++)
             {
-                Console.WriteLine(xx[i].Name);
-                Button btn = (Button)this.Controls[xx[i].Name];
+                //Console.WriteLine(xx[i].Name);
+                Button btn = (Button)this.Controls[BotonesActuales[i]];
                 if (set == true)
                 {
 
@@ -291,11 +328,7 @@ namespace testButton
                             moverInicio();
                             break;
                         }
-                    case "botonSalir":
-                        {
-                            this.Close();
-                            break;
-                        }
+
                     case "botonImprimir":
                         {
                             Console.WriteLine("Imprimiendo...");
@@ -306,14 +339,22 @@ namespace testButton
                             Console.WriteLine("Exportando...");
                             break;
                         }
+                    case "botonSucursales":
+                        {
+                            Console.WriteLine("Sucursales...");
+                            break;
+                        }
                     default:
                         break;
                 }
             }
-
+            if (btnDynamicButton.Name == "botonSalir")
+            {
+                this.Close();
+            }
         }
         public void BloqueoBotones(bool bloqueoBotones)
-            {
+        {
             if (bloqueoBotones)
             {
                 changeLock(bloqueoBotones);
@@ -324,9 +365,9 @@ namespace testButton
                 changeLock(bloqueoBotones);
                 bloqueoBotones = true;
             }
-            }
+        }
 
-        private void HabilitacionGlobal(Dictionary <string, bool> nuevaHabilitacion)
+        private void HabilitacionGlobal(Dictionary<string, bool> nuevaHabilitacion)
         {
             int i = 0;
             foreach (var item in nuevaHabilitacion)
@@ -340,7 +381,7 @@ namespace testButton
         }
 
 
-        
+
         #endregion
 
         #region "Código de ayuda para hacer pruebas"
@@ -354,16 +395,16 @@ namespace testButton
 
 
 
- 
-    //public static void StateChanged(string nuevoEstado, Form1 form1)
-    //{
-    //    if (nuevoEstado == "Espera")
-    //    {
-    //        form1.bloqueoBotones = !form1.bloqueoBotones;
-    //        form1.BloqueoBotones(form1.bloqueoBotones);
-    //    }
-    //}
-    private void testingCell(object sender, DataGridViewCellEventArgs e)
+
+        //public static void StateChanged(string nuevoEstado, Form1 form1)
+        //{
+        //    if (nuevoEstado == "Espera")
+        //    {
+        //        form1.bloqueoBotones = !form1.bloqueoBotones;
+        //        form1.BloqueoBotones(form1.bloqueoBotones);
+        //    }
+        //}
+        private void testingCell(object sender, DataGridViewCellEventArgs e)
         {
             Console.WriteLine("doble click!");
 
@@ -387,93 +428,72 @@ namespace testButton
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            
+
             BuscarDatos();
-            
+
 
         }
-        #endregion
 
-        private void data(object sender, KeyPressEventArgs e)
-        {
-            Console.WriteLine("----------");
-            Console.WriteLine(dataGridView1.CurrentCell);
-            if (e.KeyChar=='\r')
-            {
-                SendKeys.Send("{tab}");
-            }
-        }
         private void test(object sender, EventArgs e)
         {
             Console.WriteLine("**************//////////////************");
         }
-        private void Inicio()
+        #endregion
+
+        #region "Procesamiento de estados del formulario"
+    public void LoadData()
         {
-            
-            setupDatagriedView();
 
-            var botones = getInfoBotonesFromFile();
-
-            xx = DesearializaerJsonFile(botones);
-
-            for (int i = 0; i < xx.Count; i++)
-            {
-                //Inicialización(xx[i].Location.X, xx[i].Location.Y, xx[i].Size.X, xx[i].Size.Y, xx[i].Text, xx[i].Name);
-            }
- 
         }
-        public void StateChanged()
+    public void StateChanged()
         {
-            string data = State.GetState();
-            if (data == "Espera")
+            string EstadoActual = State.GetState();
+            if (EstadoActual == "Espera")
             {
                 BloqueoBotones(true);
             }
-            else if(data == "Buscar")
+            else if (EstadoActual == "Buscar")
             {
                 BloqueoBotones(true);
             }
-            else if (data == "Mostrar")
+            else if (EstadoActual == "Mostrar")
             {
                 BloqueoBotones(false);
             }
         }
-    }
-    #region "Estado del Formulario"
+    #endregion
+}
+    #region "Clase que maneja el Estado del Formulario"
     class StateForm
     {
         public StateForm()
         {
             this.StateFormValue = "Inicio";
-            Console.WriteLine(this.StateFormValue);
+            //Console.WriteLine(this.StateFormValue);
         }
         public string GetState()
         {
             return StateFormValue;
         }
         public void SetState(string StateFormValue)
-        {
-            Console.WriteLine("----------------------");
-            Console.WriteLine(StateFormValue);
+        {;
             if (this.StateFormValue == "Inicio" && StateFormValue == "Espera")
-                {
+            {
                 this.StateFormValue = StateFormValue;
-                Console.WriteLine("entró al cambio de Inicio a Espera....: ",StateFormValue);
-                }
+                //Console.WriteLine("entró al cambio de Inicio a Espera....: ",StateFormValue);
+            }
             else if (this.StateFormValue == "Espera" && StateFormValue == "Buscar")
-                {
+            {
                 this.StateFormValue = StateFormValue;
-                }
+            }
             else if (this.StateFormValue == "Buscar" && StateFormValue == "Mostrar")
-                {
+            {
                 this.StateFormValue = StateFormValue;
-                }
-            else if(this.StateFormValue == "Mostrar" && StateFormValue == "Espera")
-                {
+            }
+            else if (this.StateFormValue == "Mostrar" && StateFormValue == "Espera")
+            {
                 this.StateFormValue = StateFormValue;
-                }
-            Console.WriteLine("-----------------");
-            
+            }
         }
         private string StateFormValue = "";
     }
