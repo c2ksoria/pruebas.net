@@ -20,25 +20,26 @@ namespace testButton
         List<Botones> xx = new List<Botones>();
         StateForm State = new StateForm();
         Dictionary<string, bool> habilitaciones = new Dictionary<string, bool>();
-        List<(string, bool)> PermisosFuncionesNavegacion = new List<(string, bool)> { ("botonInicio", true), ("botonArriba", true), ("botonAbajo", true), ("botonFin", true) };
-        List<(string, bool, string, int, int, int, int)> PosicionesBotones = new List<(string, bool, string, int, int, int, int)>(){
-                ("botonInicio", true, "|<", 12, 44, 80, 30),
-                ("botonArriba", true, "<", 98, 44, 80, 30),
-                ("botonAbajo", true, ">", 188, 44, 80, 30),
-                ("botonFin", true, ">|", 270, 44, 80, 30),
-                ("BG1", true, "BG1", 356, 44, 80, 30),
-                ("BG2", true, "BG2", 442, 44, 80, 30),
-                ("BG3", true, "BG3", 528, 44, 80, 30),
-                ("BG4", true, "BG4", 614, 44, 80, 30),
-                ("botonConfig", true, "Configurar", 700, 44, 80, 30),
-                ("botonExportar", true, "Exportar", 786, 44, 80, 30),
-                ("botonImprimir", true, "Imprimir", 872, 44, 80, 30),
-                ("botonSalir", true, "Salir", 958, 44, 80, 30)
-        };
-        Dictionary<string, string> NuevosBotonesSetup = new Dictionary<string, string>();
+        //List<(string, bool)> PermisosFuncionesNavegacion = new List<(string, bool)> ();
+        //List<(string, bool, string, int, int, int, int)> PosicionesBotones = new List<(string, bool, string, int, int, int, int)>();
+
+        //{
+        //        ("botonInicio", true, "|<", 12, 44, 80, 30),
+        //        ("botonArriba", true, "<", 98, 44, 80, 30),
+        //        ("botonAbajo", true, ">", 188, 44, 80, 30),
+        //        ("botonFin", true, ">|", 270, 44, 80, 30),
+        //        ("BG1", true, "BG1", 356, 44, 80, 30),
+        //        ("BG2", true, "BG2", 442, 44, 80, 30),
+        //        ("BG3", true, "BG3", 528, 44, 80, 30),
+        //        ("BG4", true, "BG4", 614, 44, 80, 30),
+        //        ("botonConfig", true, "Configurar", 700, 44, 80, 30),
+        //        ("botonExportar", true, "Exportar", 786, 44, 80, 30),
+        //        ("botonImprimir", true, "Imprimir", 872, 44, 80, 30),
+        //        ("botonSalir", true, "Salir", 958, 44, 80, 30)
+        //};
         // item1: Nombre, Item2: habilitación, Item3: Texto, Item4: Xpos, Item5: Ypos, Item6: Xsize, Item7: Ysize //
-        List<(string, bool)> Basicas = new List<(string, bool)>() { ("botonConfig", false), ("botonExportar", true), ("botonImprimir", true), ("botonSalir", true) };
-        List<(string, bool, string, string)> PermisosFuncionesCustom = new List<(string, bool, string, string)>() { ("BG1", true, "botonSucursales", "Sucursales"), ("BG2", true, "botonPlanes", "Planes"), ("BG4", true, "botonGrabar", "Grabar") };
+        //List<(string, bool)> Basicas = new List<(string, bool)>();
+        //List<(string, bool, string, string)> PermisosFuncionesCustom = new List<(string, bool, string, string)>();
         List<string> BotonesActuales = new List<string>();
         public Form1()
         {
@@ -48,14 +49,12 @@ namespace testButton
         private void Form1_Load(object sender, EventArgs e)
         {
             // Campos: Nombre de Comando, habilitación, Nombre 
-            Console.WriteLine("-------------------");
-            Inicio();
-            State.SetState("Espera");
-            StateChanged();
+
             //BloqueoBotones(bloqueoBotones);
             //HabilitacionGlobal(habilitaciones);
             //Console.WriteLine("Obteniedo estado actual: ",State.GetState());
             //Console.WriteLine(State.GetState());
+            LoadData();
         }
         #endregion
 
@@ -97,17 +96,7 @@ namespace testButton
         }
         private void Inicio()
         {
-            setupDatagriedView();
-            ClearData();
-            Setup(PermisosFuncionesNavegacion);
-            Setup(PermisosFuncionesCustom);
-            Setup(Basicas);
-            for (int i = 0; i < BotonesActuales.Count; i++)
-            {
-                Console.WriteLine("boton: {0}", BotonesActuales[i]);
-                //Button btn = (Button)this.Controls[BotonesActuales[i]];
-                //btn.TabIndex = i;
-            }
+           
         }
         #endregion
 
@@ -444,7 +433,28 @@ namespace testButton
     public void LoadData()
         {
 
+            Console.WriteLine("-------------------");
+            setupDatagriedView();
+            ClearData();
+            Setup(this.PermisosFuncionesNavegacion);
+            Setup(this.PermisosFuncionesCustom);
+            Setup(this.Basicas);
+            for (int i = 0; i < BotonesActuales.Count; i++)
+            {
+                Console.WriteLine("boton: {0}", BotonesActuales[i]);
+                //Button btn = (Button)this.Controls[BotonesActuales[i]];
+                textBox1.Text = BotonesActuales[i];
+            }
+            State.SetState("Espera");
+            StateChanged();
         }
+        public List<(string, bool)> Basicas { get; set; }
+        public List<(string, bool, string, string)> PermisosFuncionesCustom { get; set; }
+        public List<(string, bool, string, int, int, int, int)> PosicionesBotones { get; set; }
+        public List<(string, bool)> PermisosFuncionesNavegacion { get; set; }
+
+
+
     public void StateChanged()
         {
             string EstadoActual = State.GetState();
