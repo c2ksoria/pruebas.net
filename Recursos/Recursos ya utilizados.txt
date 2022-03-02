@@ -108,3 +108,38 @@
             //btnDynamicButton.Click += new EventHandler(btnDynamicButton_Click);
             //Controls.Add(btnDynamicButton);
             //DynamicButtonCount++;
+
+            //List<(string, bool)> PermisosFuncionesNavegacion = new List<(string, bool)> ();
+        //List<(string, bool, string, int, int, int, int)> PosicionesBotones = new List<(string, bool, string, int, int, int, int)>();
+
+        //{
+        //        ("botonInicio", true, "|<", 12, 44, 80, 30),
+        //        ("botonArriba", true, "<", 98, 44, 80, 30),
+        //        ("botonAbajo", true, ">", 188, 44, 80, 30),
+        //        ("botonFin", true, ">|", 270, 44, 80, 30),
+        //        ("BG1", true, "BG1", 356, 44, 80, 30),
+        //        ("BG2", true, "BG2", 442, 44, 80, 30),
+        //        ("BG3", true, "BG3", 528, 44, 80, 30),
+        //        ("BG4", true, "BG4", 614, 44, 80, 30),
+        //        ("botonConfig", true, "Configurar", 700, 44, 80, 30),
+        //        ("botonExportar", true, "Exportar", 786, 44, 80, 30),
+        //        ("botonImprimir", true, "Imprimir", 872, 44, 80, 30),
+        //        ("botonSalir", true, "Salir", 958, 44, 80, 30)
+        //};
+        // item1: Nombre, Item2: habilitación, Item3: Texto, Item4: Xpos, Item5: Ypos, Item6: Xsize, Item7: Ysize //
+        //List<(string, bool)> Basicas = new List<(string, bool)>();
+        //List<(string, bool, string, string)> PermisosFuncionesCustom = new List<(string, bool, string, string)>();
+
+
+                //private void HabilitacionGlobal(Dictionary<string, bool> nuevaHabilitacion)
+        //{
+        //    int i = 0;
+        //    foreach (var item in nuevaHabilitacion)
+        //    {
+        //        Button btn = (Button)this.Controls[xx[i].Name];
+        //        btn.Visible = item.Value;
+        //        Console.WriteLine("Key " + item.Key + " Value " + item.Value);
+        //        i++;
+
+        //    }
+        //}

@@ -16,31 +16,12 @@ namespace testButton
 {
     public partial class Form1 : Form
     {
+        StateForm State = new StateForm();
         private static string _path = @"C:\Users\Valdemar\Desktop\SFH\Pruebas\xxx\test\Recursos\setupBotones.json";
         List<Botones> xx = new List<Botones>();
-        StateForm State = new StateForm();
         Dictionary<string, bool> habilitaciones = new Dictionary<string, bool>();
-        //List<(string, bool)> PermisosFuncionesNavegacion = new List<(string, bool)> ();
-        //List<(string, bool, string, int, int, int, int)> PosicionesBotones = new List<(string, bool, string, int, int, int, int)>();
-
-        //{
-        //        ("botonInicio", true, "|<", 12, 44, 80, 30),
-        //        ("botonArriba", true, "<", 98, 44, 80, 30),
-        //        ("botonAbajo", true, ">", 188, 44, 80, 30),
-        //        ("botonFin", true, ">|", 270, 44, 80, 30),
-        //        ("BG1", true, "BG1", 356, 44, 80, 30),
-        //        ("BG2", true, "BG2", 442, 44, 80, 30),
-        //        ("BG3", true, "BG3", 528, 44, 80, 30),
-        //        ("BG4", true, "BG4", 614, 44, 80, 30),
-        //        ("botonConfig", true, "Configurar", 700, 44, 80, 30),
-        //        ("botonExportar", true, "Exportar", 786, 44, 80, 30),
-        //        ("botonImprimir", true, "Imprimir", 872, 44, 80, 30),
-        //        ("botonSalir", true, "Salir", 958, 44, 80, 30)
-        //};
-        // item1: Nombre, Item2: habilitación, Item3: Texto, Item4: Xpos, Item5: Ypos, Item6: Xsize, Item7: Ysize //
-        //List<(string, bool)> Basicas = new List<(string, bool)>();
-        //List<(string, bool, string, string)> PermisosFuncionesCustom = new List<(string, bool, string, string)>();
-        List<string> BotonesActuales = new List<string>();
+        
+        private List<string> BotonesActuales = new List<string>();
         public Form1()
         {
             InitializeComponent();
@@ -48,12 +29,6 @@ namespace testButton
         #region "LOAD Formulario"
         private void Form1_Load(object sender, EventArgs e)
         {
-            // Campos: Nombre de Comando, habilitación, Nombre 
-
-            //BloqueoBotones(bloqueoBotones);
-            //HabilitacionGlobal(habilitaciones);
-            //Console.WriteLine("Obteniedo estado actual: ",State.GetState());
-            //Console.WriteLine(State.GetState());
             LoadData();
         }
         #endregion
@@ -61,42 +36,53 @@ namespace testButton
         #region "Setup de botones en base a permisos"
         private void Setup(List<(string, bool)> aProcesar)
         {
-            for (int i = 0; i < aProcesar.Count; i++)
+            try
             {
-                if (aProcesar[i].Item2 == true)
+                for (int i = 0; i < aProcesar.Count; i++)
                 {
-                    for (int j = 0; j < PosicionesBotones.Count; j++)
+                    if (aProcesar[i].Item2 == true)
                     {
-                        if (aProcesar[i].Item1 == PosicionesBotones[j].Item1)
+                        for (int j = 0; j < PosicionesBotones.Count; j++)
                         {
-                            //Console.WriteLine("aProcesar: {0} == PosicionesBotones {1}",aProcesar[i].Item1, PosicionesBotones[j].Item1);
-                            Inicialización(PosicionesBotones[j].Item4, PosicionesBotones[j].Item5, PosicionesBotones[j].Item6, PosicionesBotones[j].Item7, PosicionesBotones[j].Item3, PosicionesBotones[j].Item1);
-                            BotonesActuales.Add(aProcesar[i].Item1);
+                            if (aProcesar[i].Item1 == PosicionesBotones[j].Item1)
+                            {
+                                Inicialización(PosicionesBotones[j].Item4, PosicionesBotones[j].Item5, PosicionesBotones[j].Item6, PosicionesBotones[j].Item7, PosicionesBotones[j].Item3, PosicionesBotones[j].Item1, PosicionesBotones[j].Item8);
+                                BotonesActuales.Add(aProcesar[i].Item1);
+                            }
                         }
                     }
                 }
             }
-        }
-        private void Setup(List<(string, bool, string, string)> aProcesar)
-        {
-            for (int i = 0; i < aProcesar.Count; i++)
+            catch (Exception ex)
             {
-                if (aProcesar[i].Item2 == true)
+                MessageBox.Show("Hubo un error", ex.Message);
+            }
+            
+        }
+        private void Setup(List<(string, bool, string, string, string)> aProcesar)
+        {
+            try
+            {
+                for (int i = 0; i < aProcesar.Count; i++)
                 {
-                    for (int j = 0; j < PosicionesBotones.Count; j++)
+                    if (aProcesar[i].Item2 == true)
                     {
-                        if (aProcesar[i].Item1 == PosicionesBotones[j].Item1)
+                        for (int j = 0; j < PosicionesBotones.Count; j++)
                         {
-                            Inicialización(PosicionesBotones[j].Item4, PosicionesBotones[j].Item5, PosicionesBotones[j].Item6, PosicionesBotones[j].Item7, aProcesar[i].Item4, aProcesar[i].Item3);
-                            BotonesActuales.Add(aProcesar[i].Item3);
+                            if (aProcesar[i].Item1 == PosicionesBotones[j].Item1)
+                            {
+                                Inicialización(PosicionesBotones[j].Item4, PosicionesBotones[j].Item5, PosicionesBotones[j].Item6, PosicionesBotones[j].Item7, aProcesar[i].Item4, aProcesar[i].Item3, aProcesar[i].Item5);
+                                BotonesActuales.Add(aProcesar[i].Item3);
+                            }
                         }
                     }
                 }
             }
-        }
-        private void Inicio()
-        {
-           
+            catch (Exception ex)
+            {
+                MessageBox.Show("Hubo un error",ex.Message);
+            }
+            
         }
         #endregion
 
@@ -153,7 +139,7 @@ namespace testButton
             Selected();
             dataGridView1.CurrentCell = dataGridView1.Rows[0].Cells[0];
         }
-
+        #region "Función de inicialización de DatagiedView"
         private void setupDatagriedView()
         {
             dataGridView1.AllowDrop = false;
@@ -168,6 +154,8 @@ namespace testButton
             dataGridView1.MultiSelect = false;
             dataGridView1.ScrollBars = ScrollBars.Vertical;
         }
+        #endregion
+        #region "Función Selección de Fila"
         private void Selected()
         {
             ///////////////////////////////////////////////////////////////////////////////////
@@ -177,6 +165,7 @@ namespace testButton
             //entero = e.RowIndex;
             ///////////////////////////////////////////////////////////////////////////////////
         }
+        #endregion
         private void data(object sender, KeyEventArgs e)
         {
             Console.WriteLine("----------");
@@ -188,11 +177,12 @@ namespace testButton
                 SendKeys.Send("{tab}");
             }
         }
+        #region "Limpieza de grilla"
         private void ClearData()
         {
             dataGridView1.DataSource = null;
         }
-
+        #endregion
         private void data(object sender, KeyPressEventArgs e)
         {
             Console.WriteLine("----------");
@@ -278,7 +268,7 @@ namespace testButton
                 }
             }
         }
-        private void Inicialización(int xPos, int yPos, int xSize, int ySize, string textButton, string nameButton)
+        private void Inicialización(int xPos, int yPos, int xSize, int ySize, string textButton, string nameButton, string icono)
         {
             Button button = new Button();
             button.Text = textButton;
@@ -286,6 +276,10 @@ namespace testButton
             button.Click += new EventHandler(btnDynamicButton_Click);
             button.Location = new Point(xPos, yPos);
             button.Size = new System.Drawing.Size(xSize, ySize);
+            button.Image = Image.FromFile(icono);
+            button.ImageAlign = ContentAlignment.MiddleLeft;
+            button.TextAlign = ContentAlignment.MiddleRight;
+            button.TextImageRelation= TextImageRelation.ImageBeforeText;
             Controls.Add(button);
         }
         private void btnDynamicButton_Click(object sender, EventArgs e)
@@ -317,7 +311,6 @@ namespace testButton
                             moverInicio();
                             break;
                         }
-
                     case "botonImprimir":
                         {
                             Console.WriteLine("Imprimiendo...");
@@ -355,51 +348,9 @@ namespace testButton
                 bloqueoBotones = true;
             }
         }
-
-        private void HabilitacionGlobal(Dictionary<string, bool> nuevaHabilitacion)
-        {
-            int i = 0;
-            foreach (var item in nuevaHabilitacion)
-            {
-                Button btn = (Button)this.Controls[xx[i].Name];
-                btn.Visible = item.Value;
-                Console.WriteLine("Key " + item.Key + " Value " + item.Value);
-                i++;
-
-            }
-        }
-
-
-
         #endregion
 
         #region "Código de ayuda para hacer pruebas"
-        private void button3_Click(object sender, EventArgs e)
-        {
-            //bloqueoBotones = !bloqueoBotones;
-            //BloqueBotones(bloqueoBotones);
-        }
-
-
-
-
-
-
-        //public static void StateChanged(string nuevoEstado, Form1 form1)
-        //{
-        //    if (nuevoEstado == "Espera")
-        //    {
-        //        form1.bloqueoBotones = !form1.bloqueoBotones;
-        //        form1.BloqueoBotones(form1.bloqueoBotones);
-        //    }
-        //}
-        private void testingCell(object sender, DataGridViewCellEventArgs e)
-        {
-            Console.WriteLine("doble click!");
-
-            //TODO:
-            //Hacer una función genérica para el comportamento de doble click dentro de la grilla.
-        }
         private void dataGridView1_Click(object sender, DataGridViewCellEventArgs e)
         {
             Selected();
@@ -407,20 +358,14 @@ namespace testButton
         public void button1_Click(object sender, EventArgs e)
         {
             Console.WriteLine("No hace nada este boton....");
-            //dataGridView1.Rows.Clear();
-            //dataGridView1.Refresh();
-            dataGridView1.DataSource = null;
+            ClearData();
             State.SetState("Espera");
             StateChanged();
-
-
+            //textBox1.Text=button1;
         }
         private void button2_Click(object sender, EventArgs e)
         {
-
             BuscarDatos();
-
-
         }
 
         private void test(object sender, EventArgs e)
@@ -429,33 +374,27 @@ namespace testButton
         }
         #endregion
 
-        #region "Procesamiento de estados del formulario"
-    public void LoadData()
+        #region "Proceso de inicialización de botones del formulario"
+        public void LoadData()
         {
-
-            Console.WriteLine("-------------------");
             setupDatagriedView();
             ClearData();
             Setup(this.PermisosFuncionesNavegacion);
             Setup(this.PermisosFuncionesCustom);
             Setup(this.Basicas);
-            for (int i = 0; i < BotonesActuales.Count; i++)
-            {
-                Console.WriteLine("boton: {0}", BotonesActuales[i]);
-                //Button btn = (Button)this.Controls[BotonesActuales[i]];
-                textBox1.Text = BotonesActuales[i];
-            }
             State.SetState("Espera");
             StateChanged();
         }
+        #region "Variables globales a ser pasadas como parámetros"
         public List<(string, bool)> Basicas { get; set; }
-        public List<(string, bool, string, string)> PermisosFuncionesCustom { get; set; }
-        public List<(string, bool, string, int, int, int, int)> PosicionesBotones { get; set; }
+        public List<(string, bool, string, string, string)> PermisosFuncionesCustom { get; set; }
+        public List<(string, bool, string, int, int, int, int, string)> PosicionesBotones { get; set; }
         public List<(string, bool)> PermisosFuncionesNavegacion { get; set; }
+        #endregion
 
-
-
-    public void StateChanged()
+        #endregion
+        #region Función de lectura de estado y cambio de visualización de botones
+        public void StateChanged()
         {
             string EstadoActual = State.GetState();
             if (EstadoActual == "Espera")
@@ -471,7 +410,7 @@ namespace testButton
                 BloqueoBotones(false);
             }
         }
-    #endregion
+        #endregion
 }
     #region "Clase que maneja el Estado del Formulario"
     class StateForm
@@ -479,11 +418,10 @@ namespace testButton
         public StateForm()
         {
             this.StateFormValue = "Inicio";
-            //Console.WriteLine(this.StateFormValue);
         }
         public string GetState()
         {
-            return StateFormValue;
+            return this.StateFormValue;
         }
         public void SetState(string StateFormValue)
         {;
