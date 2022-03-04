@@ -12,11 +12,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using testButton.Models;
 
+
 namespace testButton
 {
     public partial class Form1 : Form
     {
-        StateForm State = new StateForm();
+        EstadoForm State = new EstadoForm();
         private static string _path = @"C:\Users\Valdemar\Desktop\SFH\Pruebas\xxx\test\Recursos\setupBotones.json";
         List<Botones> xx = new List<Botones>();
         Dictionary<string, bool> habilitaciones = new Dictionary<string, bool>();
