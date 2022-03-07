@@ -12,17 +12,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using testButton.Models;
 
-
 namespace testButton
 {
     public partial class Form1 : Form
     {
         EstadoForm State = new EstadoForm();
-        private static string _path = @"C:\Users\Valdemar\Desktop\SFH\Pruebas\xxx\test\Recursos\setupBotones.json";
-        List<Botones> xx = new List<Botones>();
-        Dictionary<string, bool> habilitaciones = new Dictionary<string, bool>();
-        
-        private List<string> BotonesActuales = new List<string>();
+        public DataTable newDataTable = new DataTable();
+        public List<string> BotonesActuales = new List<string>();
+        public BindingSource bind = new BindingSource();
         public Form1()
         {
             InitializeComponent();
@@ -30,7 +27,7 @@ namespace testButton
         #region "LOAD Formulario"
         private void Form1_Load(object sender, EventArgs e)
         {
-            LoadData();
+            //LoadData();
         }
         #endregion
 
@@ -58,7 +55,6 @@ namespace testButton
             {
                 MessageBox.Show("Hubo un error", ex.Message);
             }
-            
         }
         private void Setup(List<(string, bool, string, string, string)> aProcesar)
         {
@@ -87,114 +83,6 @@ namespace testButton
         }
         #endregion
 
-        #region "Métodos DataGriedView"
-        private int getCount() => dataGridView1.Rows.Count;
-        private int getRow() => dataGridView1.CurrentCell.RowIndex;
-
-        private int[] getInfoRow()
-        {
-            int countRows = getCount();
-            int indexRow = getRow();
-            int[] ArraInfo = new int[2] { countRows, indexRow };
-
-            return ArraInfo;
-        }
-
-        private void moverAbajo()
-        {
-            int[] ArrayInfo = new int[2];
-            ArrayInfo = getInfoRow();
-
-            if (ArrayInfo[1] < (ArrayInfo[0] - 1))
-            {
-                DataGridViewCellEventArgs ee = new DataGridViewCellEventArgs(1, ArrayInfo[1]++);
-                Selected();
-                dataGridView1.CurrentCell = dataGridView1.Rows[ArrayInfo[1]++].Cells[0];
-            }
-        }
-        private void moverArriba()
-        {
-            int[] ArrayInfo = new int[2];
-            ArrayInfo = getInfoRow();
-
-            if (ArrayInfo[1] > 0)
-            {
-                DataGridViewCellEventArgs ee = new DataGridViewCellEventArgs(1, ArrayInfo[1]--);
-                Selected();
-                dataGridView1.CurrentCell = dataGridView1.Rows[ArrayInfo[1]--].Cells[0];
-            }
-        }
-
-        private void moverFin()
-        {
-            int[] ArrayInfo = new int[2];
-            ArrayInfo = getInfoRow();
-            //DataGridViewCellEventArgs ee = new DataGridViewCellEventArgs(1, ArrayInfo[0] - 1);
-            Selected();
-            dataGridView1.CurrentCell = dataGridView1.Rows[ArrayInfo[0] - 1].Cells[0];
-        }
-
-        private void moverInicio()
-        {
-            //DataGridViewCellEventArgs ee = new DataGridViewCellEventArgs(1, 0);
-            Selected();
-            dataGridView1.CurrentCell = dataGridView1.Rows[0].Cells[0];
-        }
-        #region "Función de inicialización de DatagiedView"
-        private void setupDatagriedView()
-        {
-            dataGridView1.AllowDrop = false;
-            dataGridView1.AllowUserToAddRows = false;
-            dataGridView1.AllowUserToDeleteRows = false;
-            dataGridView1.AllowUserToOrderColumns = false;
-            dataGridView1.AllowUserToResizeColumns = false;
-            dataGridView1.AllowUserToResizeRows = false;
-            dataGridView1.ClipboardCopyMode = DataGridViewClipboardCopyMode.Disable;
-            dataGridView1.ReadOnly = true;
-            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView1.MultiSelect = false;
-            dataGridView1.ScrollBars = ScrollBars.Vertical;
-        }
-        #endregion
-        #region "Función Selección de Fila"
-        private void Selected()
-        {
-            ///////////////////////////////////////////////////////////////////////////////////
-            //Funcion de selección de Row. Segundo Intento más optimizado, utilizando una variable global
-            DataGridViewRow row = dataGridView1.Rows[0];
-            row.DefaultCellStyle.BackColor = Color.White;
-            //entero = e.RowIndex;
-            ///////////////////////////////////////////////////////////////////////////////////
-        }
-        #endregion
-        private void data(object sender, KeyEventArgs e)
-        {
-            Console.WriteLine("----------");
-            Console.WriteLine(dataGridView1.CurrentCell);
-            if (e.KeyCode == Keys.Enter)
-            {
-                e.SuppressKeyPress = true;
-                e.Handled = true;
-                SendKeys.Send("{tab}");
-            }
-        }
-        #region "Limpieza de grilla"
-        private void ClearData()
-        {
-            dataGridView1.DataSource = null;
-        }
-        #endregion
-        private void data(object sender, KeyPressEventArgs e)
-        {
-            Console.WriteLine("----------");
-            Console.WriteLine(dataGridView1.CurrentCell);
-            if (e.KeyChar == '\r')
-            {
-                SendKeys.Send("{tab}");
-            }
-        }
-        #endregion
-
         #region "Lectura de Datos"
         void ImportarDatos(string nombrearchivo) //COMO PARAMETROS OBTENEMOS EL NOMBRE DEL ARCHIVO A IMPORTAR
         {
@@ -214,19 +102,12 @@ namespace testButton
                 SelectCommand = consulta
             };
 
-            DataSet ds = new DataSet();
-
+            DataTable ds = new DataTable();
             adaptador.Fill(ds);
-
             conector.Close();
-
-            dataGridView1.DataSource = ds.Tables[0].DefaultView;
-            ///////////////////////////////////////////////////////////////////////////////////
-            //no sorteable script
-            foreach (DataGridViewColumn column in dataGridView1.Columns)
-            {
-                column.SortMode = DataGridViewColumnSortMode.NotSortable;
-            }
+            DataSet data = new DataSet("empleado");
+            newDataTable = ds;
+            bind.DataSource = ds;
         }
         private void BuscarDatos()
         {
@@ -236,19 +117,7 @@ namespace testButton
             ImportarDatos(path);
             State.SetState("Mostrar");
             StateChanged();
-
         }
-
-        public static string getInfoBotonesFromFile()
-        {
-            string botonesInfoFromfile;
-            using (var reader = new StreamReader(_path))
-            {
-                botonesInfoFromfile = reader.ReadToEnd();
-            }
-            return botonesInfoFromfile;
-        }
-        static List<Botones> DesearializaerJsonFile(string infoBotonesFromFiles) => JsonConvert.DeserializeObject<List<Botones>>(infoBotonesFromFiles);
         #endregion
 
         #region "Métodos de Botones de navegacion"
@@ -286,31 +155,32 @@ namespace testButton
         private void btnDynamicButton_Click(object sender, EventArgs e)
         {
             Button btnDynamicButton = sender as Button;
-            textBox1.AppendText(btnDynamicButton.Text);
-            textBox1.AppendText(Environment.NewLine);
-            if (dataGridView1.Rows.Count != 0)
-            {
+
                 switch (btnDynamicButton.Name)
                 {
                     case "botonAbajo":
                         {
-                            moverAbajo();
-                            break;
+                        bind.MoveNext();
+                        Console.WriteLine("moviendo abajo... Posición: ", bind.Position);
+                        break;
                         }
                     case "botonArriba":
                         {
-                            moverArriba();
-                            break;
+                        bind.MovePrevious();
+                        Console.WriteLine("moviendo Arriba... Posición: ", bind.Position);
+                        break;
                         }
                     case "botonFin":
                         {
-                            moverFin();
-                            break;
+                        bind.MoveLast();
+                        Console.WriteLine("moviendo FIN... Posición: ", bind.Position);
+                        break;
                         }
                     case "botonInicio":
                         {
-                            moverInicio();
-                            break;
+                        bind.MoveFirst();
+                        Console.WriteLine("moviendo Inicio... Posición: ", bind.Position);
+                        break;
                         }
                     case "botonImprimir":
                         {
@@ -327,10 +197,21 @@ namespace testButton
                             Console.WriteLine("Sucursales...");
                             break;
                         }
+                    case "botonConfig":
+                        {
+                            Console.WriteLine("Configurar...");
+                            break;
+                        }
+                    case "botonUnidad":
+                        {
+                            Console.WriteLine("Unidad...");
+                            break;
+                        }
+
+
                     default:
                         break;
                 }
-            }
             if (btnDynamicButton.Name == "botonSalir")
             {
                 this.Close();
@@ -352,17 +233,12 @@ namespace testButton
         #endregion
 
         #region "Código de ayuda para hacer pruebas"
-        private void dataGridView1_Click(object sender, DataGridViewCellEventArgs e)
-        {
-            Selected();
-        }
+
         public void button1_Click(object sender, EventArgs e)
         {
             Console.WriteLine("No hace nada este boton....");
-            ClearData();
             State.SetState("Espera");
             StateChanged();
-            //textBox1.Text=button1;
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -378,8 +254,6 @@ namespace testButton
         #region "Proceso de inicialización de botones del formulario"
         public void LoadData()
         {
-            setupDatagriedView();
-            ClearData();
             Setup(this.PermisosFuncionesNavegacion);
             Setup(this.PermisosFuncionesCustom);
             Setup(this.Basicas);
@@ -391,6 +265,7 @@ namespace testButton
         public List<(string, bool, string, string, string)> PermisosFuncionesCustom { get; set; }
         public List<(string, bool, string, int, int, int, int, string)> PosicionesBotones { get; set; }
         public List<(string, bool)> PermisosFuncionesNavegacion { get; set; }
+
         #endregion
 
         #endregion
@@ -412,39 +287,5 @@ namespace testButton
             }
         }
         #endregion
-}
-    #region "Clase que maneja el Estado del Formulario"
-    class StateForm
-    {
-        public StateForm()
-        {
-            this.StateFormValue = "Inicio";
-        }
-        public string GetState()
-        {
-            return this.StateFormValue;
-        }
-        public void SetState(string StateFormValue)
-        {;
-            if (this.StateFormValue == "Inicio" && StateFormValue == "Espera")
-            {
-                this.StateFormValue = StateFormValue;
-                //Console.WriteLine("entró al cambio de Inicio a Espera....: ",StateFormValue);
-            }
-            else if (this.StateFormValue == "Espera" && StateFormValue == "Buscar")
-            {
-                this.StateFormValue = StateFormValue;
-            }
-            else if (this.StateFormValue == "Buscar" && StateFormValue == "Mostrar")
-            {
-                this.StateFormValue = StateFormValue;
-            }
-            else if (this.StateFormValue == "Mostrar" && StateFormValue == "Espera")
-            {
-                this.StateFormValue = StateFormValue;
-            }
-        }
-        private string StateFormValue = "";
     }
-    #endregion
 }
