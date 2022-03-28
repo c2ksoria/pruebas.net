@@ -23,6 +23,7 @@ namespace testButton
         public BindingSource bind = new BindingSource();
         List<(char, short)> aProcesar = new List<(char, short)> { ('N', 1), ('P', 2), ('E', 4), ('I', 8), ('C', 16), ('T', 32), ('Q', 64), ('B', 128), ('M', 256), ('A', 512) };
         public string nprog = "";
+        public string PermisosUsuario = "";
         public Form1()
         {
             InitializeComponent();
@@ -48,7 +49,9 @@ namespace testButton
                 if (nprog == (string)s.nProg)
                     {
                     Console.WriteLine(s.Permisos);
-                    //Console.WriteLine(s.PersonalizacionBotones[0].NombreBotonNuevo);
+
+                    ComparaPermisos((string)s.Permisos, PermisosUsuario);
+
                     }
             }
         }
@@ -56,7 +59,6 @@ namespace testButton
         {
 
         }
-
         #region "Setup de botones en base a permisos"
         private void Setup(List<(string, bool)> aProcesar)
         {
@@ -219,27 +221,27 @@ namespace testButton
                     }
                 case "botonImprimir":
                     {
-                        Console.WriteLine("Imprimiendo...");
+                        Imprimir();
                         break;
                     }
                 case "botonExportar":
                     {
-                        Console.WriteLine("Exportando...");
+                        Exportar();
                         break;
                     }
                 case "botonSucursales":
                     {
-                        Console.WriteLine("Sucursales...");
+                        Sucursales();
                         break;
                     }
                 case "botonConfig":
                     {
-                        Console.WriteLine("Configurar...");
+                        Configurar();
                         break;
                     }
                 case "botonUnidad":
                     {
-                        Console.WriteLine("Unidad...");
+                        U_Negocio();
                         break;
                     }
 
@@ -357,7 +359,7 @@ namespace testButton
                     }
                 }
             }
-            Console.WriteLine("El resultado es: {0} ", result);
+            //Console.WriteLine("El resultado es: {0} ", result);
             return result;
         }
 
@@ -423,19 +425,19 @@ namespace testButton
             }
             if ((dato1 & dato2 & aProcesar[3].Item2) == aProcesar[3].Item2)    //Letra I
             {
-                //Console.WriteLine("TRUE: el resultado es I-> 8...procesar función. A Procesar: {0}, xx: {1}", aProcesar[3].Item2, xx);
+                Console.WriteLine("TRUE: el resultado es I-> 8...procesar función.");
             }
             else
             {
-                //Console.WriteLine("FALSE: el resultado es I-> 8...procesar función. A Procesar: {0}, xx: {1}", aProcesar[3].Item2, xx);
+                Console.WriteLine("FALSE: el resultado es I-> 8...procesar función.");
             }
             if ((dato1 & dato2 & aProcesar[2].Item2) == aProcesar[2].Item2)    //Letra E
             {
-                //Console.WriteLine("TRUE: el resultado es E-> 4...procesar función. A Procesar: {0}, xx: {1}", aProcesar[2].Item2, xx);
+                Console.WriteLine("TRUE: el resultado es E-> 4...procesar función.");
             }
             else
             {
-                //Console.WriteLine("FALSE: el resultado es E-> 4 ...procesar función. A Procesar: {0}, xx: {1}", aProcesar[2].Item2, xx);
+                Console.WriteLine("FALSE: el resultado es E-> 4 ...procesar función.");
             }
             if ((dato1 & dato2 & aProcesar[1].Item2) == aProcesar[1].Item2)    //Letra P
             {
@@ -457,6 +459,34 @@ namespace testButton
             Console.WriteLine("-----------FIN----------");
         }
         #endregion
+        private void Imprimir()
+        {
+            Console.WriteLine("Imprimiendo...");
+        }
+        private void Exportar()
+        {
+            Console.WriteLine("Exportando...");
+        }
+        private void Configurar()
+        {
+            Console.WriteLine("Configurar...");
+        }
+        private void Opciones()
+        {
+
+        }
+        private void Grabar()
+        {
+
+        }
+        private void U_Negocio()
+        {
+            Console.WriteLine("Unidad...");
+        }
+        private void Sucursales()
+        {
+            Console.WriteLine("Sucursales...");
+        }
     }
 }
         
